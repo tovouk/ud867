@@ -20,6 +20,11 @@ in the webOutputDir property via the command line).
 
 */
 
+ext{
+    //webOutputDir = "build1"
+    customDir = "custom"
+} 
+
 task bundleWeb(type: Zip) {
     baseName = 'web'
     destinationDir = file(webOutputDir)
