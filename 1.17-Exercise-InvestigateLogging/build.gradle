@@ -26,14 +26,23 @@ Exercises:
 task hello(type: HelloTask)
 
 class HelloTask extends DefaultTask {
+    
     @TaskAction
     void doAction() {
-        println 'Hello World'
+        logger.info "starting"
+        logger.lifecycle "Hello World"
+        println "printing a line"
+        logger.info "ending"
     }
+    
 }
 
-/*
+//gradle -b build.gradle -d hello | findStr "Catch me if you can"
+logger.debug "Catch me if you can"
+
+//use stacktrace flag to find error
+//gradle -s derpy
 task derpy << {
     primp "Herp de derp"
 }
-*/
+
