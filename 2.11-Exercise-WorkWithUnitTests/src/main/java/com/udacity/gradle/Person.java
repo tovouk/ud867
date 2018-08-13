@@ -7,6 +7,7 @@ public class Person {
         this.name = name;
     }
 
+    //causes the test to fail as it will always return foo
     public String getName() {
         return "foo";
     }

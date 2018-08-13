@@ -8,6 +8,7 @@ public class PersonTest {
     @Test
     public void test() {
         Person person = new Person("Jeremy");
+        //will fail, foo will be returned and that is not equal to Jeremy
         Assert.assertEquals(person.getName(), "Jeremy");
     }
 }
