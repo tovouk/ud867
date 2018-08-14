@@ -20,3 +20,10 @@ solution file into this one.
 */
 
 //apply from: "solution.gradle"
+apply plugin: "java"
+apply plugin: "application"
+
+mainClassName = "com.udacity.gradle.JokeTeller"
+
+//in android studio I ran it using the Gradle sidemenu on the right
+//Under Tasks > application > run
