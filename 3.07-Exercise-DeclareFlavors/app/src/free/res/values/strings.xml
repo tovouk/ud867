@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="product_flavor_name">Free</string>
+    <string name="joke">What did the goat say to the moon? \n Can I have some cheese?</string>
 </resources>
