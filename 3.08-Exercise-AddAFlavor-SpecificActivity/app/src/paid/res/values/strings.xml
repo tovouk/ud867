@@ -1,0 +1,7 @@
+<resources>
+    <string name="greeting">Welcome to the paid version!</string>
+    <string name="app_name">Flavor Specific Activity - Paid</string>
+    <string name="question">What did the clown say to Tom Sawyer?</string>
+    <string name="answer">Nothing&#8230;he couldn\'t see him ;)(idk what I\'m saying)</string>
+    <string name="title">Joke Activity</string>
+</resources>
