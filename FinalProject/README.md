@@ -1,3 +1,8 @@
+# TODO:
+1. Implement Google cloud endpoints
+2. Add functional tests
+3. Add actual jokes instead of numbers
+
 # Gradle for Android and Java Final Project
 
 In this project, you will create an app with multiple flavors that uses
