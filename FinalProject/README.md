@@ -1,7 +1,4 @@
-# TODO:
-1. Implement Google cloud endpoints
-2. Add functional tests
-3. Add actual jokes instead of numbers
+#First submission to be reviewed
 
 # Gradle for Android and Java Final Project
 

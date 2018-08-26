@@ -1,23 +1,47 @@
 package com.udacity.gradle.builditbigger;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
-import com.udacity.gradle.builditbigger.R;
-import com.josehinojo.javajokes.Jokes;
-import com.josehinojo.jokesactivity.JokesActivity;
+import com.google.api.client.extensions.android.http.AndroidHttp;
+import com.google.api.client.extensions.android.json.AndroidJsonFactory;
+import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
+import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
+import com.josehinojo.jokesactivity.JokesActivityLite;
+import com.udacity.gradle.builditbigger.backend.myApi.MyApi;
+
+import java.io.IOException;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    @BindView(R.id.progressbar)
+    ProgressBar progressBar;
+    @BindView(R.id.waiting) TextView waiting;
+    @BindView(R.id.instructions_text_view)
+    TextView instructions;
+    @BindView(R.id.jokeButton)
+    Button jokeButton;
+
+    String jokeString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
     }
 
 
@@ -26,6 +50,12 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        showInstructions();
     }
 
     @Override
@@ -43,12 +73,67 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void tellJoke(View view) {
-        Jokes joke = new Jokes();
-        String jokeString = joke.getAJoke();
-        Intent intent = new Intent(this,JokesActivity.class);
+    public void startJoke(View view){
+        showLoading();
+        new EndpointsAsyncTask().execute(this);
+    }
+
+    public void tellJoke() {
+        Intent intent = new Intent(this,JokesActivityLite.class);
         intent.putExtra("joke", jokeString);
         startActivity(intent);
+    }
+
+    public void showLoading(){
+        instructions.setVisibility(View.INVISIBLE);
+        jokeButton.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+        waiting.setVisibility(View.VISIBLE);
+    }
+
+    public void showInstructions(){
+        progressBar.setVisibility(View.INVISIBLE);
+        waiting.setVisibility(View.INVISIBLE);
+        instructions.setVisibility(View.VISIBLE);
+        jokeButton.setVisibility(View.VISIBLE);
+    }
+
+    class EndpointsAsyncTask extends AsyncTask<Context, Void, String> {
+        private MyApi myApiService = null;
+
+        @Override
+        protected String doInBackground(Context... params) {
+            if(myApiService == null) {  // Only do this once
+                MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(),
+                        new AndroidJsonFactory(), null)
+                        // options for running against local devappserver
+                        // - 10.0.2.2 is localhost's IP address in Android emulator
+                        // - turn off compression when running against local devappserver
+                        .setRootUrl("http://10.0.2.2:8080/_ah/api/")
+                        .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
+                            @Override
+                            public void initialize(AbstractGoogleClientRequest<?> abstractGoogleClientRequest) throws IOException {
+                                abstractGoogleClientRequest.setDisableGZipContent(true);
+                            }
+                        });
+                // end options for devappserver
+
+                myApiService = builder.build();
+            }
+
+
+            try {
+                return myApiService.getAJoke().execute().getData();
+            } catch (IOException e) {
+                return e.getMessage();
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            jokeString = result;
+            tellJoke();
+        }
     }
 
 
